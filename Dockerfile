@@ -1,16 +1,14 @@
-FROM java:openjdk-8-jdk-alpine
+FROM openjdk:8-alpine
 
-MAINTAINER Timo Litzius <timo.litzius@aoe.com>
+LABEL maintainer="Timo Litzius <timo.litzius@aoe.com>"
 
-ENV SBT_VERSION 0.13.15
 ENV SBT_HOME /usr/local/sbt
 ENV PATH ${PATH}:${SBT_HOME}/bin
 
-
 RUN apk update && apk upgrade && \
-    apk add --no-cache bash git openssh docker curl tar gzip
-# Install sbt
-RUN curl -sL "http://dl.bintray.com/sbt/native-packages/sbt/$SBT_VERSION/sbt-$SBT_VERSION.tgz" | gunzip | tar -x -C /usr/local && echo -ne "- with sbt $SBT_VERSION\n" >> /root/.built
+    apk add --no-cache bash curl openssh tar jq git
 
-RUN ln -s /usr/local/sbt-launcher-packaging-$SBT_VERSION/bin/sbt /usr/local/bin/sbt
-RUN sbt sbt-version
+RUN curl -sL $(curl -s 'https://api.github.com/repos/sbt/sbt/releases/latest' | jq -r '.assets[] | select(.content_type == "application/gzip").browser_download_url') | tar -xz -C /usr/local
+
+# preinstalls sbt and scala packages
+RUN sbt sbtVersion
