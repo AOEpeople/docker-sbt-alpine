@@ -1,8 +1,8 @@
-FROM openjdk:11.0.2-jdk
+FROM openjdk:8-alpine
 
 LABEL maintainer="Timo Litzius <timo.litzius@aoe.com>"
 
-ENV SBT_VERSION 1.2.8
+ENV SBT_VERSION 1.2.7
 ENV SBT_HOME /usr/local/sbt
 ENV PATH ${PATH}:${SBT_HOME}/bin
 
